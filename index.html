@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Heroes of Astra — Полная версия</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <div class="app-container">
+        <div class="main-menu">
+            <button id="heroBtn" class="main-btn">🌀 Герой</button>
+            <button id="cityBtn" class="main-btn disabled">🏰 Город (скоро)</button>
+            <div class="hero-selector">
+                <label>🌀 Выберите героя:</label>
+                <select id="heroSelect" class="hero-dropdown"></select>
+            </div>
+        </div>
+
+        <div id="heroScreen" class="hero-screen">
+            <div class="hero-tabs">
+                <button class="tab-btn active" data-tab="army">⚔️ Армия</button>
+                <button class="tab-btn" data-tab="skills">📖 Навыки и умения</button>
+                <button class="tab-btn" data-tab="gear">⚙️ Снаряжение</button>
+                <button class="tab-btn" data-tab="bio">📜 Биография</button>
+            </div>
+
+            <div id="tab-army" class="tab-content active">
+                <div class="hero-profile">
+                    <div class="hero-portrait" id="heroPortrait">
+                        <img id="heroPortraitImg" src="" alt="portrait">
+                    </div>
+                    <div class="hero-info">
+                        <div class="hero-name" id="heroName">
+                            Загрузка...
+                        </div>
+                        <div class="hero-class" id="heroClass">
+                            -
+                        </div>
+                        <div class="exp-bar-container">
+                            <div class="exp-bar-fill" id="expBarFill" style="width:0%"></div>
+                        </div>
+                        <div class="hero-level" id="heroLevelInfo">
+                            Уровень 1 · Опыт: 0 / 1000
+                        </div>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-label">
+                                    ⚔️ Нападение
+                                </div>
+                                <div class="stat-value" id="statAttack">
+                                    0
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">
+                                    🛡️ Защита
+                                </div>
+                                <div class="stat-value" id="statDefense">
+                                    0
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">
+                                    🔮 Колдовство
+                                </div>
+                                <div class="stat-value" id="statSpellpower">
+                                    0
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">
+                                    📚 Знание
+                                </div>
+                                <div class="stat-value" id="statKnowledge">
+                                    0
+                                </div>
+                            </div>
+                        </div>
+                        <div class="secondary-stats">
+                            <div class="secondary-stat">
+                                <span class="secondary-stat-label">✨ Боевой дух</span><span class="secondary-stat-value" id="statMorale">0</span>
+                            </div>
+                            <div class="secondary-stat">
+                                <span class="secondary-stat-label">🍀 Удача</span><span class="secondary-stat-value" id="statLuck">0</span>
+                            </div>
+                            <div class="secondary-stat">
+                                <span class="secondary-stat-label">💧 Мана</span><span class="secondary-stat-value" id="statMana">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="army-slots">
+                    <div class="section-title">
+                        🐉 Состав армии
+                    </div>
+                    <div class="slots-grid" id="armySlotsGrid"></div>
+                </div>
+
+                <div class="war-machines-slots">
+                    <div class="section-title">
+                        ⚙️ Боевые машины
+                    </div>
+                    <div class="war-grid" id="warMachinesGrid"></div>
+                </div>
+
+                <div class="exp-buttons">
+                    <button id="addExp500" class="exp-btn">+500 опыта</button><button id="addExp1000" class="exp-btn">+1000 опыта</button>
+                </div>
+            </div>
+
+            <div id="tab-skills" class="tab-content">
+                <div class="skills-container" id="skillsContainer"></div>
+                <div class="racial-skill-container" id="racialSkillContainer"></div>
+                <div class="specialization-container" id="specializationContainer"></div>
+                <div class="central-perk-container" id="centralPerkContainer"></div>
+            </div>
+
+            <div id="tab-gear" class="tab-content">
+                <div class="artifact-grid" id="artifactSlotsGrid"></div>
+                <div class="inventory-section">
+                    <div class="section-title">
+                        📦 Инвентарь
+                    </div>
+                    <div class="inventory-grid" id="inventoryContainer"></div>
+                </div>
+            </div>
+
+            <div id="tab-bio" class="tab-content">
+                <div style="text-align:center; padding:60px 20px;">
+                    📜 Биография в разработке
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="choiceOverlay" class="choice-overlay">
+        <div class="choice-panel" id="choicePanel"></div>
+    </div>
+    <div id="creatureOverlay" class="creature-overlay">
+        <div id="creaturePanel" class="creature-panel"></div>
+    </div>
+
+    <div id="battleOverlay" class="battle-overlay">
+        <div class="battle-container">
+            <button class="battle-close" id="closeBattleBtn">✖</button>
+            <div class="battle-layout" id="battleLayout">
+                <div class="battle-sidebar attacker" id="attackerSidebar"></div>
+                <div style="flex:1; min-width: 0;">
+                    <div class="battle-initiative-bar" id="initiativeBar"></div>
+                    <div class="battle-field" id="battleField"></div>
+                    <div class="battle-controls" id="battleControls"></div>
+                    <div class="battle-status" id="battleStatus"></div>
+                </div>
+                <div class="battle-sidebar defender" id="defenderSidebar"></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+                                                                                  </html>
