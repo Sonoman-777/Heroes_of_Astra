@@ -1,12 +1,27 @@
 // ============================================================================
-//  РАСЧЁТ ХАРАКТЕРИСТИК ГЕРОЯ
+//  РАСЧЁТ ХАРАКТЕРИСТИК ГЕРОЯ (БЕЗ ЦИКЛИЧЕСКИХ ИМПОРТОВ)
 // ============================================================================
 
 import { currentHero } from '../../js/state.js';
-import { getRandomStatWithPriority, addStatPoint, addEducationBonus, checkAndApplyEducationBonus } from '../../js/utils.js';
-import { showLevelUpChoice } from '../../js/ui/overlays/choiceOverlay.js';
-import { updateStatsUI, updateExpBarUI } from '../../js/ui/heroScreen.js';
-import { saveCurrentHero } from '../../js/utils.js';
+import { getRandomStatWithPriority } from '../../js/utils.js';
+
+// Внутренние функции для работы со статами
+function addStatPoint(stat) { 
+    currentHero.baseStats[stat]++; 
+}
+
+function addEducationBonus(stat) { 
+    currentHero.educationBonus[stat]++; 
+}
+
+function checkAndApplyEducationBonus(newLvl, oldLvl) {
+    const edu = currentHero.learnedSkills.find(s => s.key === "education");
+    if (!edu || edu.level === 0) return;
+    const step = edu.level === 1 ? 4 : (edu.level === 2 ? 3 : 2);
+    let cnt = 0;
+    for (let l = oldLvl + 1; l <= newLvl; l++) if (l % step === 0) cnt++;
+    for (let i = 0; i < cnt; i++) addEducationBonus(getRandomStatWithPriority());
+}
 
 export function getTotalStats() {
     return {
@@ -32,14 +47,31 @@ export function updateLevelAndStatsFromExp() {
         for (let i = 0; i < newLvl - old; i++) addStatPoint(getRandomStatWithPriority());
         currentHero.currentLevel = newLvl;
         checkAndApplyEducationBonus(newLvl, old);
-        updateStatsUI();
-        showLevelUpChoice();
-        saveCurrentHero();
+        
+        // Динамический импорт для избежания циклической зависимости
+        import('../../js/ui/heroScreen.js').then(module => {
+            module.updateStatsUI();
+        });
+        import('../../js/ui/overlays/choiceOverlay.js').then(module => {
+            module.showLevelUpChoice();
+        });
+        import('../../js/utils.js').then(module => {
+            module.saveCurrentHero();
+        });
     }
-    updateExpBarUI();
+    
+    // Динамический импорт для обновления UI опыта
+    import('../../js/ui/heroScreen.js').then(module => {
+        const cur = getTotalExpRequiredForLevel(currentHero.currentLevel);
+        const next = getTotalExpRequiredForLevel(currentHero.currentLevel + 1);
+        const percent = Math.min(100, (currentHero.currentExp - cur) / (next - cur) * 100);
+        document.getElementById("expBarFill").style.width = percent + "%";
+        document.getElementById("heroLevelInfo").innerHTML = `Уровень ${currentHero.currentLevel} · Опыт: ${currentHero.currentExp} / ${next}`;
+        module.updateStatsUI();
+    });
 }
 
-// Экспортируем в глобальную область для обратной совместимости
+// Экспортируем в глобальную область
 window.getTotalStats = getTotalStats;
 window.getTotalExpRequiredForLevel = getTotalExpRequiredForLevel;
 window.updateLevelAndStatsFromExp = updateLevelAndStatsFromExp;
