@@ -1,19 +1,19 @@
 // ============================================================================
-//  МОДУЛЬ 1: PERK ENGINE — ВСЕ ПРОВЕРКИ УМЕНИЙ ГЕРОЯ
+//  МОДУЛЬ 1: PERK ENGINE — ВСЕ ПРОВЕРКИ УМЕНИЙ ГЕРОЯ (БЕЗ ЦИКЛИЧЕСКИХ ИМПОРТОВ)
 // ============================================================================
-
-import { getTotalStats } from '../hero/stats.js';
-import { currentHero } from '../../js/state.js';
 
 export class PerkEngine {
     // Получить все бонусы героя
     static getHeroBonuses(hero) {
         if (!hero) return {};
         
-        const savedHero = currentHero;
-        currentHero.hero = hero;
-        const stats = getTotalStats();
-        currentHero.hero = savedHero;
+        // Вычисляем суммарные статы без импорта getTotalStats
+        const totalStats = {
+            attack: hero.baseStats.attack + hero.educationBonus.attack,
+            defense: hero.baseStats.defense + hero.educationBonus.defense,
+            spellpower: hero.baseStats.spellpower + hero.educationBonus.spellpower,
+            knowledge: hero.baseStats.knowledge + hero.educationBonus.knowledge
+        };
         
         const lead = hero.learnedSkills?.find(s => s.key === "leadership");
         const luck = hero.learnedSkills?.find(s => s.key === "luck");
@@ -26,10 +26,10 @@ export class PerkEngine {
         
         return {
             // Базовые статы
-            attackBonus: stats.attack,
-            defenseBonus: stats.defense,
-            spellpowerBonus: stats.spellpower,
-            knowledgeBonus: stats.knowledge,
+            attackBonus: totalStats.attack,
+            defenseBonus: totalStats.defense,
+            spellpowerBonus: totalStats.spellpower,
+            knowledgeBonus: totalStats.knowledge,
             
             // Лидерство и Удача
             moraleBonus: lead ? lead.level : 0,
@@ -168,4 +168,4 @@ export class PerkEngine {
             return tacticsActive ? [9, 10] : [10];
         }
     }
-}
+        }
