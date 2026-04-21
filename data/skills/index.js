@@ -4,7 +4,7 @@
 
 import { SKILLS_SHADOWLORD } from './shadowLord.js';
 // Импорты остальных классов будут добавлены по мере создания
-// import { SKILLS_CHAOSWARRIOR } from './chaoswarrior.js';
+// import { SKILLS_CHAOSWARRIOR } from './chaosWarrior.js';
 // import { SKILLS_KNIGHT } from './knight.js';
 // import { SKILLS_MECHANIC } from './mechanic.js';
 // import { SKILLS_BARBARIAN } from './barbarian.js';
