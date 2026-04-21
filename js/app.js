@@ -2,8 +2,6 @@
 //  ТОЧКА ВХОДА — ИНИЦИАЛИЗАЦИЯ ПРИЛОЖЕНИЯ
 // ============================================================================
 
-alert('ШАГ 1: app.js загрузился и начал работу');
-
 import { currentHero, setCurrentHero } from './state.js';
 import { HEROES_DB } from '../data/heroes/index.js';
 import { loadHero, saveCurrentHero } from '../core/hero/heroManager.js';
