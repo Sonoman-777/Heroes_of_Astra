@@ -32,7 +32,7 @@ export function refreshHeroStatsUI() {
 export function refreshAllUI() {
     if (!currentHero) return;
     document.getElementById("heroName").innerText = currentHero.name;
-    document.getElementById("heroClass").innerText = currentHero.heroClass === "ShadowLord" ? "Лорд Теней" : (currentHero.heroClass || "Лорд Теней");
+    document.getElementById("heroClass").innerText = currentHero.class === "ShadowLord" ? "Лорд Теней" : (currentHero.class || "Лорд Теней");
     if (currentHero.portrait) document.getElementById("heroPortraitImg").src = currentHero.portrait;
     refreshHeroStatsUI();
     renderArmySlots();
